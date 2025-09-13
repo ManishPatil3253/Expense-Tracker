@@ -17,7 +17,8 @@ const port = process.env.PORT;
 
 connectDB();
 
-const allowedOrigins = [
+/*const allowedOrigins = [
+  "http://localhost:3000",
   "https://main.d1sj7cd70hlter.amplifyapp.com",
   "https://expense-tracker-app-three-beryl.vercel.app",
   // add more origins as needed
@@ -31,7 +32,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
-);
+);*/
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("dev"));
