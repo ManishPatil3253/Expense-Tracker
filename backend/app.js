@@ -1,54 +1,62 @@
 import 'dotenv/config';
 import express from "express";
 import cors from "cors";
-import { connectDB } from "./DB/Database.js";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+
+import { connectDB } from "./DB/Database.js";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
-import path from "path";
 
-dotenv.config({ path: "./config/config.env" });
 const app = express();
+const port = process.env.PORT || 5000; // Provide a default port
 
-const port = process.env.PORT;
-
+// Connect to Database
 connectDB();
 
-// Re-enable Helmet for security
+// --- Middleware Configuration ---
+
+// Security Headers
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
-// The list of websites that are allowed to make requests
+// CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',
   'https://main.d1sj7cd70hlter.amplifyapp.com',
   'https://expense-tracker-app-three-beryl.vercel.app',
 ];
 
-// CORS configuration
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
 
-app.use(morgan("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// Modern Body Parsing
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
-// Router
+// Logger
+app.use(morgan("dev"));
+
+
+// --- Routers ---
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
 app.get("/", (req, res) => {
-  res.send("Deployment sanity check successful!");
+  res.status(200).json({ message: "Expense Tracker API is running" });
 });
 
+
+// --- Centralized Error Handling ---
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+
+// --- Server Listener ---
 app.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`);
+  console.log(`Server is listening on port: ${port}`);
 });
