@@ -42,8 +42,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
 
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Deployment sanity check successful!");
 });
 
 app.listen(port, () => {
