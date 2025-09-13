@@ -17,6 +17,12 @@ const port = process.env.PORT;
 
 connectDB();
 
+// ADD THIS TEST LOGGER RIGHT HERE
+app.use((req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.url}`);
+  next();
+});
+
 /*const allowedOrigins = [
   "http://localhost:3000",
   "https://main.d1sj7cd70hlter.amplifyapp.com",
