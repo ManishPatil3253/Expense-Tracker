@@ -17,30 +17,23 @@ const port = process.env.PORT;
 
 connectDB();
 
-// ADD THIS TEST LOGGER RIGHT HERE
-app.use((req, res, next) => {
-  console.log(`Request received: ${req.method} ${req.url}`);
-  next();
-});
+// Re-enable Helmet for security
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
-/*const allowedOrigins = [
-  "http://localhost:3000",
-  "https://main.d1sj7cd70hlter.amplifyapp.com",
-  "https://expense-tracker-app-three-beryl.vercel.app",
-  // add more origins as needed
+// The list of websites that are allowed to make requests
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://main.d1sj7cd70hlter.amplifyapp.com',
+  'https://expense-tracker-app-three-beryl.vercel.app',
 ];
 
-// Middleware
-app.use(express.json());
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);*/
-// app.use(helmet());
-// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+// CORS configuration
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
